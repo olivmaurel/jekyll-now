@@ -73,12 +73,12 @@ If you already have jinja2 installed in your django project, just skip this part
 [The solution described below comes from Jonathan Chu's blog](http://jonathanchu.is/posts/upgrading-jinja2-templates-django-18-with-admin)
 
 1)  Install jinja2:
-
+        
         pip install jinja2
 
 2)  modify myproject/settings.py (change 'myproject' with the name of your
     app):
-
+        {% highlight python %}
         TEMPLATES = [
         {
             'BACKEND': 'django.template.backends.jinja2.Jinja2',
@@ -107,12 +107,13 @@ If you already have jinja2 installed in your django project, just skip this part
             },
         },
         ]
+        {% endhighlight %}
 
 Make sure to keep both jinja2 and django backend, since jinja2 templates may mess with the admin interface
 
 3)  Create a dedicated folder for jinja2 templates under your
     application main folder:
-
+        {% highlight python %}
         myproject
         ├── myproject
         │   ├── __init__.py
@@ -129,9 +130,11 @@ Make sure to keep both jinja2 and django backend, since jinja2 templates may mes
         │           ├── base.html
         │           ├── home.html
         |
-
+        {% endhighlight %}
+        
 4)  Create a jinja2.py file at the same level as your settings.py file, and paste the following code in it:
 
+        {% highlight python %}
         def environment(**options):
             env = Environment(**options)
             env.globals.update({
@@ -139,6 +142,7 @@ Make sure to keep both jinja2 and django backend, since jinja2 templates may mes
                 'url': reverse,
             })
             return env
+        {% endhighlight %}    
 
 5) That's it. Now Django should be using Jinja2 template engine by default, which is by the way a huge improvement from the default template engine. [The official Jinja2 documentation has many examples and use cases](http://jinja.pocoo.org/docs/2.9) (although not this one!)
 
