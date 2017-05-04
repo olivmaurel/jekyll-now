@@ -23,18 +23,20 @@ As a complement, I have created a sample django project illustrating the differe
 The solution in itself is pretty straightforward, requiring only to install jinja2 (covered further down), and adding a few lines of codes in your views.py file:
 
 {% highlight python %}
-    import os
-    from jinja2 import Environment, FileSystemLoader
-    from django.http import StreamingHttpResponse
+import os
+from jinja2 import Environment, FileSystemLoader
+from django.http import StreamingHttpResponse
 
-    def jinja_generate_with_template(template_filename, context):
+def jinja_generate_with_template(template_filename, context):
 
-        template_dir = os.path.dirname(os.path.abspath(__file__)) + '/templates/'
+    template_dir = os.path.dirname(os.path.abspath(__file__)) + '/templates/'
 
-        j2_env = Environment(loader=FileSystemLoader(template_dir), trim_blocks=True)
-        j2_template = j2_env.get_template(template_filename)
-        j2_generator = j2_template.generate(context)
-        return j2_generator
+    j2_env = Environment(loader=FileSystemLoader(template_dir), trim_blocks=True)
+    j2_template = j2_env.get_template(template_filename)
+    j2_generator = j2_template.generate(context)
+    
+    return j2_generator
+    
 {% endhighlight %}
 
 What's going on here?
@@ -50,11 +52,14 @@ You can then create a generator in your view function by calling the above funct
 StreamingHttpGenerator() class, like this:
 
 {% highlight python %}
-    def your_view(request):
-        your_template = 'jinja2/my_awesome_template.html'
-        your_context = {'foo':'bar'}
-        stream = jinja_generate_with_template(your_template, your_context)
-        return StreamingHttpResponse(stream)
+
+def your_view(request):    
+    template = 'jinja2/my_awesome_template.html'
+    context = {'foo':'bar'}
+    stream = jinja_generate_with_template(template, context)
+    
+    return StreamingHttpResponse(stream)
+        
 {% endhighlight %}
 
 Once this is done, save your views.py file, open the web page in your browser, and see the magic for yourself! 
@@ -78,71 +83,70 @@ If you already have jinja2 installed in your django project, just skip this part
 
 2)  modify myproject/settings.py (change 'myproject' with the name of your
     app):
-        {% highlight python %}
-        TEMPLATES = [
-        {
-            'BACKEND': 'django.template.backends.jinja2.Jinja2',
-            'DIRS': [
-                os.path.join(BASE_DIR, 'templates/jinja2'),
-            ],
-            'APP_DIRS': True,
-            'OPTIONS': {
-                'environment': 'myproject.jinja2.environment',
-            },
-        },
-        {
-            'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [],
-            'APP_DIRS': True,
-            'OPTIONS': {
-                'context_processors': [
-                    'django.contrib.auth.context_processors.auth',
-                    'django.template.context_processors.debug',
-                    'django.template.context_processors.i18n',
-                    'django.template.context_processors.media',
-                    'django.template.context_processors.static',
-                    'django.template.context_processors.tz',
-                    'django.contrib.messages.context_processors.messages',
-                ],
-            },
-        },
-        ]
-        {% endhighlight %}
+{% highlight python %}
+TEMPLATES = [
+{
+    'BACKEND': 'django.template.backends.jinja2.Jinja2',
+    'DIRS': [
+        os.path.join(BASE_DIR, 'templates/jinja2'),
+    ],
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'environment': 'myproject.jinja2.environment',
+    },
+},
+{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': [],
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'context_processors': [
+            'django.contrib.auth.context_processors.auth',
+            'django.template.context_processors.debug',
+            'django.template.context_processors.i18n',
+            'django.template.context_processors.media',
+            'django.template.context_processors.static',
+            'django.template.context_processors.tz',
+            'django.contrib.messages.context_processors.messages',
+        ],
+    },
+},
+]
+{% endhighlight %}
 
 Make sure to keep both jinja2 and django backend, since jinja2 templates may mess with the admin interface
 
-3)  Create a dedicated folder for jinja2 templates under your
-    application main folder:
-        {% highlight python %}
-        myproject
-        ├── myproject
-        │   ├── __init__.py
-        │   ├── jinja2.py
-        │   ├── settings.py
-        │   ├── urls.py
-        │   └── wsgi.py
-        ├── manage.py
-        ├── myapp
-        │   └── views.py
-        │   └── urls.py
-        │   └── templates
-        |        └──jinja2
-        │           ├── base.html
-        │           ├── home.html
-        |
-        {% endhighlight %}
+3)  Create a dedicated folder for jinja2 templates under your application main folder:
+{% highlight python %}
+myproject
+├── myproject
+│   ├── __init__.py
+│   ├── jinja2.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── manage.py
+├── myapp
+│   └── views.py
+│   └── urls.py
+│   └── templates
+|        └──jinja2
+│           ├── base.html
+│           ├── home.html
+|
+{% endhighlight %}
         
 4)  Create a jinja2.py file at the same level as your settings.py file, and paste the following code in it:
 
-        {% highlight python %}
-        def environment(**options):
-            env = Environment(**options)
-            env.globals.update({
-                'static': staticfiles_storage.url,
-                'url': reverse,
-            })
-            return env
-        {% endhighlight %}    
+{% highlight python %}
+def environment(**options):
+    env = Environment(**options)
+    env.globals.update({
+        'static': staticfiles_storage.url,
+        'url': reverse,
+    })
+    return env
+{% endhighlight %}    
 
 5) That's it. Now Django should be using Jinja2 template engine by default, which is by the way a huge improvement from the default template engine. [The official Jinja2 documentation has many examples and use cases](http://jinja.pocoo.org/docs/2.9) (although not this one!)
 
