@@ -21,20 +21,22 @@ When I stumbled upon this issue, I looked around on the web for a solution, some
 As a complement, I have created a sample django project illustrating the difference between HttpResponse(), StreamingHttpResponse(), and integrating jinja2.generate() with StreamingHttpResponse(). [Feel free to check it out.](https://github.com/olivmaurel/jinja_httpstream)
 
 The solution in itself is pretty straightforward, requiring only to install jinja2 (covered further down), and adding a few lines of codes in your views.py file:
-```python
-import os
-from jinja2 import Environment, FileSystemLoader
-from django.http import StreamingHttpResponse
 
-def jinja_generate_with_template(template_filename, context):
+{% highlight python %}
+    import os
+    from jinja2 import Environment, FileSystemLoader
+    from django.http import StreamingHttpResponse
 
-    template_dir = os.path.dirname(os.path.abspath(__file__)) + '/templates/'
-        
-    j2_env = Environment(loader=FileSystemLoader(template_dir), trim_blocks=True)
-    j2_template = j2_env.get_template(template_filename)
-    j2_generator = j2_template.generate(context)
-    return j2_generator
-    ```
+    def jinja_generate_with_template(template_filename, context):
+
+        template_dir = os.path.dirname(os.path.abspath(__file__)) + '/templates/'
+
+        j2_env = Environment(loader=FileSystemLoader(template_dir), trim_blocks=True)
+        j2_template = j2_env.get_template(template_filename)
+        j2_generator = j2_template.generate(context)
+        return j2_generator
+{% endhighlight %}
+
 What's going on here?
 
 - First, define manually the path for the template directory template_dir. Then create a jinja2.Environment object and point it to your template folder using the loader= attribute, and set the attribute trim_blocks to True to get rid of formatting problems caused by white spaces.
