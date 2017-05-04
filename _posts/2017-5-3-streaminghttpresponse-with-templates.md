@@ -49,11 +49,13 @@ What's going on here?
 You can then create a generator in your view function by calling the above function, then return it in a
 StreamingHttpGenerator() class, like this:
 
+{% highlight python %}
     def your_view(request):
         your_template = 'jinja2/my_awesome_template.html'
         your_context = {'foo':'bar'}
         stream = jinja_generate_with_template(your_template, your_context)
         return StreamingHttpResponse(stream)
+{% endhighlight %}
 
 Once this is done, save your views.py file, open the web page in your browser, and see the magic for yourself! 
 
