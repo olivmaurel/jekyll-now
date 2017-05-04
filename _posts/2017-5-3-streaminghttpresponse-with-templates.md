@@ -13,8 +13,8 @@ HttpResponse() class. So you can stream your data to the browser using a generat
 generator, leading to ugly and unmaintanable blobs of html.
 
 
-Solution : use jinja2.generate()
---------------------------------
+The Solution : use jinja2.generate()
+------------------------------------
 
 When I stumbled upon this issue, I looked around on the web for a solution, someone suggested the jinja2 template engine with the generate() method, but with no indication on how to use it in Django. I hope this blog post will help others to implement and make usage of jinja2.generate() in their django projects. 
 
@@ -59,12 +59,12 @@ Example
 -------
 I have created a sample django project illustrating the difference between HttpResponse(), StreamingHttpResponse(), and integrating jinja2.generate() with StreamingHttpResponse(). [Feel free to check it out.](https://github.com/olivmaurel/jinja_httpstream)
 
-Installing jinja2 in your django project
-----------------------------------------
+Extra: Installing jinja2 in your django project
+-----------------------------------------------
 
-If you want to use jinja2.generate() to stream and render templates in your Django project, you can install jinja2 and with a few settings modifications you should be good to go.
+If you are not using jinja2, and you want to give this solution a try in your Django project, you will need to install jinja2, and with a few settings modifications you should be good to go.
 
-If you already have jinja2 installed in your django project, just skip this part and use directly the example described above in views.py
+If you already have jinja2 installed in your django project, just skip this part and use directly the example described above.
 
 [The solution described below comes from Jonathan Chu's blog](http://jonathanchu.is/posts/upgrading-jinja2-templates-django-18-with-admin)
 
