@@ -1,26 +1,26 @@
 ---
 layout: post
-title: StreamingHttpResponse() with templates using Jinja2
+title: Using templates in your StreamingHttpResponse() with Jinja2
 ---
-
-The problem : no templates with StreamingHttpResponse()
--------------------------------------------------------
 
 [As the official documentation
 states](https://docs.djangoproject.com/en/1.10/ref/request-response/#django.http.StreamingHttpResponse), Django is designed for short-lived requests, and it's preferable to avoid streaming responses. But there are cases where you prefer to avoid the normal request-response cycle and stream data in your http response.
+
+The problem : no templates with StreamingHttpResponse()
+-------------------------------------------------------
 In Django, as you may already know, the StreamingHttpResponse() class is not meant to be used with a template like the normal
 HttpResponse() class. So you can stream your data to the browser using a generator, and the only formatting allowed has to go through the
 generator, leading to ugly and unmaintanable blobs of html.
 
 
-The solution : using jinja2.generate()
---------------------------------------
+Solution : use jinja2.generate()
+--------------------------------
 
 When I stumbled upon this issue, I looked around on the web for a solution, someone suggested the jinja2 template engine with the generate() method, but with no indication on how to use it in Django. I hope this blog post will help others to implement and make usage of jinja2.generate() in their django projects. 
 
 As a complement, I have created a sample django project illustrating the difference between HttpResponse(), StreamingHttpResponse(), and integrating jinja2.generate() with StreamingHttpResponse(). [Feel free to check it out.](https://github.com/olivmaurel/jinja_httpstream)
 
-The solution in itself is pretty straightforward, requiring only to install jinja2, and adding a few lines of codes in your views.py file:
+The solution in itself is pretty straightforward, requiring only to install jinja2 (covered further down), and adding a few lines of codes in your views.py file:
 
     import os
     from jinja2 import Environment, FileSystemLoader
@@ -37,10 +37,10 @@ The solution in itself is pretty straightforward, requiring only to install jinj
 
 What's going on here?
 
-- First, I define manually the path for the template directory template_dir. Then I create a jinja2.Environment object and I point it to my template folder using the loader= attribute, and I set the attribute trim_blocks to True to get rid of formatting problems caused by white spaces.
-- I create a template using get_template(template_filename)
-- Then I can define my generator using the template.generator() method. 
-- Last step will be to return this generator for the StreamingHttpResponse() class to consume.
+- First, define manually the path for the template directory template_dir. Then create a jinja2.Environment object and point it to your template folder using the loader= attribute, and set the attribute trim_blocks to True to get rid of formatting problems caused by white spaces.
+- Create a template object containing your template file using Environment.get_template(template_filename)
+- Then you can define your generator using the template.generate() method. 
+- The last step will be to return this generator for the StreamingHttpResponse() class to consume.
 
 (Note: I volontarily detailed every step in the above example for the sake of clarity, feel free to modify it and reduce the number of lines in your own implementation)
 
