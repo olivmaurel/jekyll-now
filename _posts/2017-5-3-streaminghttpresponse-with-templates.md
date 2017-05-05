@@ -71,9 +71,9 @@ I have created a sample django project illustrating the difference between HttpR
 Extra: Installing jinja2 in your django project
 -----------------------------------------------
 
-If you are not using jinja2, and you want to give this solution a try in your Django project, you will need to install jinja2, and with a few settings modifications you should be good to go.
+If you are not using jinja2, and you want to give this solution a try in your Django project, you will need to install it, and with a few settings modifications you should be good to go.
 
-If you already have jinja2 installed in your django project, just skip this part and use directly the example described above.
+If you are already using the jinja template engine in your project, just skip this part and use directly the example described above.
 
 [The solution described below comes from Jonathan Chu's blog](http://jonathanchu.is/posts/upgrading-jinja2-templates-django-18-with-admin)
 
